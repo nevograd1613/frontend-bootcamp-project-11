@@ -2,11 +2,18 @@ import * as yup from 'yup';
 import state from '../components/state.js';
 
 const validation = (text) => {
-   const schema = yup.string().required().url();
+   yup.setLocale({
+      string: {
+         url: 'feedbackNotDone',
+       },
+   })
+   const schema = yup.string().url();
    return schema.validate(text)
-   .then()
+   .then(() => {
+      return true;
+   })
    .catch((e) => {
-      state.errors = e.message;
+      return false;
    });
 };
 
