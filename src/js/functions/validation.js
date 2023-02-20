@@ -1,5 +1,4 @@
 import * as yup from 'yup';
-import state from '../components/state.js';
 
 const validation = (text) => {
    yup.setLocale({

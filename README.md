@@ -4,8 +4,8 @@
 [![Actions Status](https://github.com/nevograd1613/frontend-bootcamp-project-11/workflows/linter/badge.svg)](https://github.com/frontend-bootcamp-project-11/actions)
 
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/1e6264b0f371f65ec38d/maintainability)](https://codeclimate.com/github/nevograd1613/frontend-project-lvl2/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/77ac8a9c9238a0eae2dd/maintainability)](https://codeclimate.com/github/nevograd1613/frontend-bootcamp-project-11/maintainability)
 
 
 
-https://frontend-bootcamp-project-11-nu.vercel.app/
+https://frontend-bootcamp-project-11-eta.vercel.app/
