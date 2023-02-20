@@ -1,16 +1,13 @@
-const formInput = document.querySelector('.form-control'),
-      formLabel = document.querySelector('.feedback'),
-      form = document.querySelector('.rss-form'),
-      btnGroup = document.querySelector('.btn-group'),
-      h1Title = document.querySelector('h1'),
-      pLead = document.querySelector('.lead'),
-      pExample = document.querySelector('p.text-muted'),
-      btnAdd = document.querySelector('.btn-lg'),
-      formInputPlaceholder = document.querySelector('label[for="url-input"]');
-
-
-
+const formInput = document.querySelector('.form-control');
+const formLabel = document.querySelector('.feedback');
+const form = document.querySelector('.rss-form');
+const btnGroup = document.querySelector('.btn-group');
+const h1Title = document.querySelector('h1');
+const pLead = document.querySelector('.lead');
+const pExample = document.querySelector('p.text-muted');
+const btnAdd = document.querySelector('.btn-lg');
+const formInputPlaceholder = document.querySelector('label[for="url-input"]');
 
 export {
-  formInput, formLabel, form, btnGroup, h1Title, pLead, pExample, btnAdd, formInputPlaceholder
+  formInput, formLabel, form, btnGroup, h1Title, pLead, pExample, btnAdd, formInputPlaceholder,
 };
