@@ -1,14 +1,12 @@
 import {
-  button, formInput, formLabel, cardName, listOfFeeds, feed, header, definition,
+  button, formInput, formLabel, cardName, listOfFeeds,
   cardNamePost, listOfPosts, modalTitle, modalBody, btnCheck,
-} from '../components/variables.js';
+} from '../components/dom-elements.js';
 
 const renderFeedback = (isError, message, i18n) => {
   formLabel.textContent = i18n.t(message);
-
   if (formLabel.classList.contains('text-danger')) formLabel.classList.remove('text-danger');
   else formLabel.classList.remove('text-succsess');
-
   if (isError) {
     formInput.classList.add('is-invalid');
     formLabel.classList.add('text-danger');
@@ -17,21 +15,22 @@ const renderFeedback = (isError, message, i18n) => {
     formLabel.classList.add('text-success');
     formInput.value = '';
   }
-
   formInput.focus();
 };
 
 const renderFeeds = (state, i18n) => {
-  cardName.textContent = i18n.t('content.feeds');
-
+  cardNamePost.textContent = i18n.t('content.feeds');
   listOfFeeds.innerHTML = '';
 
   state.rssContent.feeds.forEach(({ title, description }) => {
+    const feed = document.createElement('li');
     feed.classList.add('list-group-item', 'border-0', 'border-end-0');
 
+    const header = document.createElement('h3');
     header.classList.add('h6', 'm-0');
     header.textContent = title;
 
+    const definition = document.createElement('p');
     definition.classList.add('m-0', 'small', 'text-black-50');
     definition.textContent = description;
 
@@ -49,7 +48,7 @@ const renderOfReadPosts = (posts) => {
 };
 
 const renderPosts = (state, i18n) => {
-  cardNamePost.textContent = i18n.t('content.posts');
+  cardName.textContent = i18n.t('content.posts');
 
   listOfPosts.innerHTML = '';
 
@@ -84,11 +83,8 @@ const renderModalWindow = (viewedPost) => {
   const {
     description, title, link,
   } = viewedPost;
-
   modalTitle.textContent = title;
-
-  modalBody.textContent = description;
-
+  modalBody.innerHTML = description;
   btnCheck.setAttribute('href', link);
 };
 

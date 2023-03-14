@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import {
   uniqueId, differenceWith, isEqual, isEmpty,
 } from 'lodash';
@@ -7,7 +8,6 @@ import languages from '../components/locales/index.js';
 import parserRss from './parserRss.js';
 import watcher from './view.js';
 import validate from './validation.js';
-import state from '../components/state.js';
 
 const setIdForTopics = (topics) => {
   topics.forEach((topic) => {
@@ -17,23 +17,22 @@ const setIdForTopics = (topics) => {
 
 const handlerOfTheReadPost = (watchedState) => {
   document.querySelector('.posts').addEventListener('click', (e) => {
-    console.log('click');
     const { id } = e.target.dataset;
     watchedState.uiState.isRead.push(id);
   });
 };
 
-const openModalWindow = (stat, watchedState) => {
+const openModalWindow = (state, watchedState) => {
   const modal = document.getElementById('modal');
   modal.addEventListener('show.bs.modal', (e) => {
     const button = e.relatedTarget;
     const { id } = button.dataset;
-    const currentPost = stat.rssContent.topics.find((topic) => topic.id === id);
+    const currentPost = state.rssContent.topics.find((topic) => topic.id === id);
     watchedState.uiState.viewedPost = currentPost;
   });
 };
 
-const addRss = (stat, watchedState) => {
+const addRss = (state, watchedState) => {
   const form = document.querySelector('.rss-form');
 
   form.addEventListener('submit', (e) => {
@@ -42,7 +41,7 @@ const addRss = (stat, watchedState) => {
     const formData = new FormData(e.target);
     const content = formData.get('url');
 
-    validate(content, stat.rssContent.resources)
+    validate(content, state.rssContent.resources)
       .then(() => {
         watchedState.rssContent.loading = 'sending';
         const proxy = new URL(`https://allorigins.hexlet.app/get?disableCache=true&url=${content}`);
@@ -50,20 +49,20 @@ const addRss = (stat, watchedState) => {
       })
       .then((response) => parserRss(response))
       .then(({ feed, topics }) => {
-        stat.rssContent.resources.unshift(content);
-        stat.rssContent.feeds.unshift(feed);
+        state.rssContent.resources.unshift(content);
+        state.rssContent.feeds.unshift(feed);
 
         setIdForTopics(topics);
-        stat.rssContent.topics.unshift(...topics);
+        state.rssContent.topics.unshift(...topics);
 
-        stat.isError = false;
+        state.isError = false;
         watchedState.rssContent.loading = 'finished';
 
         handlerOfTheReadPost(watchedState);
-        openModalWindow(stat, watchedState);
+        openModalWindow(state, watchedState);
       })
       .catch((error) => {
-        stat.isError = true;
+        state.isError = true;
         switch (error.name) {
           case 'AxiosError':
             watchedState.errors = 'loading.errors.errorNetWork';
@@ -82,23 +81,23 @@ const addRss = (stat, watchedState) => {
   });
 };
 
-const updateRss = (stat, watchedState) => {
+const updateRss = (state, watchedState) => {
   const proxy = 'https://allorigins.hexlet.app/get?disableCache=true&url=';
 
   // eslint-disable-next-line arrow-body-style
-  const promises = stat.rssContent.resources.map((resource) => {
+  const promises = state.rssContent.resources.map((resource) => {
     return axios.get(`${proxy}${resource}`)
       .then((response) => parserRss(response))
       .catch((error) => {
         switch (error.name) {
           case 'AxiosError':
-            stat.errors = 'update.errors.errorNetWork';
+            state.errors = 'update.errors.errorNetWork';
             break;
           case 'ParsingError':
-            stat.errors = 'update.errors.errorResource';
+            state.errors = 'update.errors.errorResource';
             break;
           default:
-            throw new Error();
+            throw new Error('No update RSS');
         }
       });
   });
@@ -124,7 +123,7 @@ const updateRss = (stat, watchedState) => {
       });
     });
 
-  setTimeout(() => updateRss(watchedState), 5000);
+  setTimeout(() => updateRss(state, watchedState), 5000);
 };
 
 export default () => {
@@ -134,6 +133,22 @@ export default () => {
     debug: true,
     resources: languages.ru,
   });
+
+  const state = {
+    feedback: '',
+    isError: null,
+    rssContent: {
+      errors: null,
+      updating: null,
+      resources: [],
+      feeds: [],
+      topics: [],
+    },
+    uiState: {
+      viewedPost: {},
+      isRead: [],
+    },
+  };
 
   const watchedState = watcher(state, i18n);
   addRss(state, watchedState);
