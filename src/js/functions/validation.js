@@ -1,15 +1,19 @@
 import * as yup from 'yup';
 
-const validation = (text) => {
+const validate = (content, listOfFeeds) => {
   yup.setLocale({
+    mixed: {
+      notOneOf: 'validation.errors.errorUniqRssUrl',
+    },
     string: {
-      url: 'feedbackNotDone',
+      url: 'validation.errors.errorURL',
+      min: 'validation.errors.errorRequired',
     },
   });
-  const schema = yup.string().url();
-  return schema.validate(text)
-    .then(() => true)
-    .catch(() => false);
+
+  const schema = yup.string().url().min(1).notOneOf(listOfFeeds);
+
+  return schema.validate(content);
 };
 
-export default validation;
+export default validate;

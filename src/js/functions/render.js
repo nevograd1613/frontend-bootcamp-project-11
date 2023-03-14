@@ -1,67 +1,108 @@
 import {
-  form, formInput, formLabel, btnGroup, h1Title, pLead, pExample, btnAdd, formInputPlaceholder,
+  button, formInput, formLabel, cardName, listOfFeeds, feed, header, definition,
+  cardNamePost, listOfPosts, modalTitle, modalBody, btnCheck,
 } from '../components/variables.js';
-import validation from './validation.js';
 
-const render = (state, i18nInstance) => {
-  const languages = ['ru', 'en'];
-  btnGroup.innerHTML = '';
-  const handleSwitchLanguage = (states) => (evt) => {
-    const { lng } = evt.target.dataset;
-    states.languadge = lng;
-  };
+const renderFeedback = (isError, message, i18n) => {
+  formLabel.textContent = i18n.t(message);
 
-  languages.forEach((lng) => {
-    const btn = document.createElement('button');
-    btn.setAttribute('type', 'button');
-    const className = state.languadge === lng ? 'btn-primary' : 'btn-outline-primary';
-    btn.classList.add('btn', 'mb-3', className);
-    btn.setAttribute('data-lng', lng);
-    btn.textContent = i18nInstance.t(`btnSelectionLanguadge.${lng}`);
-    btn.addEventListener('click', handleSwitchLanguage(state));
-    btnGroup.appendChild(btn);
-  });
+  if (formLabel.classList.contains('text-danger')) formLabel.classList.remove('text-danger');
+  else formLabel.classList.remove('text-succsess');
 
-  h1Title.textContent = i18nInstance.t('h1Title');
-  pLead.textContent = i18nInstance.t('pLead');
-  pExample.textContent = i18nInstance.t('pExample');
-  btnAdd.textContent = i18nInstance.t('btnAdd');
-  formInputPlaceholder.textContent = i18nInstance.t('formInputPlaceholder');
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    validation(formData.get('url'))
-      .then((isValid) => {
-        state.link = formData.get('url');
-        state.isValid = isValid;
-      });
-    form.reset();
-    formInput.focus();
-  });
-};
-
-export const renderFeedback = (state, i18nInstance) => {
-  if (state.isValid) {
-    if (!state.links.includes(state.link)) {
-      formInput.classList.remove('is-invalid');
-      formLabel.textContent = i18nInstance.t('errors.feedbackDone');
-      formLabel.classList.remove('text-danger');
-      formLabel.classList.add('text-success');
-      state.links.push(state.link);
-    } else {
-      formInput.classList.add('is-invalid');
-      formLabel.textContent = i18nInstance.t('errors.feedbackAlreadyExist');
-      formLabel.classList.remove('text-success');
-      formLabel.classList.add('text-danger');
-    }
-  } else {
+  if (isError) {
     formInput.classList.add('is-invalid');
-    formLabel.textContent = i18nInstance.t('errors.feedbackNotDone');
-    formLabel.classList.remove('text-success');
     formLabel.classList.add('text-danger');
+  } else {
+    if (formInput.classList.contains('is-invalid')) formInput.classList.remove('is-invalid');
+    formLabel.classList.add('text-success');
+    formInput.value = '';
   }
-  console.log(state);
+
+  formInput.focus();
 };
 
-export default render;
+const renderFeeds = (state, i18n) => {
+  cardName.textContent = i18n.t('content.feeds');
+
+  listOfFeeds.innerHTML = '';
+
+  state.rssContent.feeds.forEach(({ title, description }) => {
+    feed.classList.add('list-group-item', 'border-0', 'border-end-0');
+
+    header.classList.add('h6', 'm-0');
+    header.textContent = title;
+
+    definition.classList.add('m-0', 'small', 'text-black-50');
+    definition.textContent = description;
+
+    feed.append(header, definition);
+    listOfFeeds.append(feed);
+  });
+};
+
+const renderOfReadPosts = (posts) => {
+  posts.forEach((id) => {
+    const post = document.querySelector(`a[data-id="${id}"]`);
+    if (post.classList.contains('fw-bold')) post.classList.remove('fw-bold');
+    post.classList.add('fw-normal', 'link-secondary');
+  });
+};
+
+const renderPosts = (state, i18n) => {
+  cardNamePost.textContent = i18n.t('content.posts');
+
+  listOfPosts.innerHTML = '';
+
+  state.rssContent.topics.forEach((topic) => {
+    const post = document.createElement('li');
+    post.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
+
+    const title = document.createElement('a');
+    title.classList.add('fw-bold');
+    title.href = topic.link;
+    title.dataset.id = topic.id;
+    title.target = '_blank';
+    title.rel = 'noopener noreferrer';
+    title.textContent = topic.title;
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+    btn.dataset.id = topic.id;
+    btn.dataset.bsToggle = 'modal';
+    btn.dataset.bsTarget = '#modal';
+    btn.textContent = i18n.t('content.view');
+
+    post.append(title, btn);
+    listOfPosts.append(post);
+  });
+
+  renderOfReadPosts(state.uiState.isRead);
+};
+
+const renderModalWindow = (viewedPost) => {
+  const {
+    description, title, link,
+  } = viewedPost;
+
+  modalTitle.textContent = title;
+
+  modalBody.textContent = description;
+
+  btnCheck.setAttribute('href', link);
+};
+
+const renderLockForm = () => {
+  formInput.setAttribute('readonly', true);
+  button.setAttribute('disabled', true);
+};
+
+const renderUnlockForm = () => {
+  formInput.removeAttribute('readonly');
+  button.removeAttribute('disabled');
+};
+
+export {
+  renderFeedback, renderFeeds, renderOfReadPosts,
+  renderPosts, renderModalWindow, renderLockForm, renderUnlockForm,
+};

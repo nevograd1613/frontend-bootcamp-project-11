@@ -1,13 +1,18 @@
-const formInput = document.querySelector('.form-control');
+const formInput = document.querySelector('#url-input');
 const formLabel = document.querySelector('.feedback');
-const form = document.querySelector('.rss-form');
-const btnGroup = document.querySelector('.btn-group');
-const h1Title = document.querySelector('h1');
-const pLead = document.querySelector('.lead');
-const pExample = document.querySelector('p.text-muted');
-const btnAdd = document.querySelector('.btn-lg');
-const formInputPlaceholder = document.querySelector('label[for="url-input"]');
+const button = document.querySelector('form button');
+const cardName = document.querySelector('.feeds .card-body h2');
+const listOfFeeds = document.querySelector('.feeds .list-group');
+const feed = document.createElement('li');
+const header = document.createElement('h3');
+const definition = document.createElement('p');
+const cardNamePost = document.querySelector('.posts .card-body h2');
+const listOfPosts = document.querySelector('.posts .list-group');
+const modalTitle = document.querySelector('.modal-title');
+const modalBody = document.querySelector('.modal-body');
+const btnCheck = document.querySelector('.modal-footer a');
 
 export {
-  formInput, formLabel, form, btnGroup, h1Title, pLead, pExample, btnAdd, formInputPlaceholder,
+  formInput, formLabel, button, cardName, listOfFeeds, feed, header, definition,
+  cardNamePost, listOfPosts, modalTitle, modalBody, btnCheck,
 };
